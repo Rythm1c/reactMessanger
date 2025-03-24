@@ -1,10 +1,15 @@
-import React from 'react'
-import Chat from './pages/Chat'
+import React from 'react';
+import Chat from './pages/Chat';
+import Authentication from './pages/Authentication'
 
 function App() {
+  let isSignedIn = false;
   return (
     <div className='h-full'>
-      <Chat />
+      {
+        isSignedIn ?
+          <Chat /> : <Authentication />
+      }
     </div>
   )
 }
