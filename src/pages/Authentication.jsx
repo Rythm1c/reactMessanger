@@ -1,55 +1,68 @@
 import { useState } from "react";
+import { signUp, login } from "../config/supabaseAuth.js";
+import { IoMdEye } from "react-icons/io";
+import { IoEyeOff } from "react-icons/io5";
 
+function Authentication({
+    setMainUser,
+    setHidden }) {
 
-function Authentication() {
     const [isSignUp, setIsSignUp] = useState(false);
-    const [formData, setFormData] = useState({ email: "", password: "", name: "" });
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const [userName, setUserName] = useState('');
+    const [password, setPassword] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(isSignUp ? "Signing Up" : "Logging In", formData);
+    const signInSteps = async () => {
+        if (isSignUp)
+            await signUp(userName, password)
+        else
+            await login(userName, password, setMainUser);
+
+
+        setHidden(true)
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white ">
+        <div className={`flex min-h-screen items-center justify-center bg-gray-900 text-white`}>
             <div className="w-96 bg-gray-800 shadow-lg p-1">
                 <div>
-                    <div className="text-center text-xl">
+                    <div className=" text-center text-xl">
                         {isSignUp ? "Sign Up" : "Login"}
                     </div>
                 </div>
                 <div>
-                    <form onSubmit={handleSubmit} className="space-y-4 flex flex-col items-center">
+                    <div className="space-y-4 flex flex-col items-center">
                         <input
                             type="text"
                             name="name"
                             placeholder="Name"
-                            value={formData.name}
-                            onChange={handleChange}
+                            onChange={(e) => setUserName(e.target.value)}
                             required
                             className="bg-gray-700 border-none text-white rounded-[2px] p-1"
                         />
 
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            className="bg-gray-700 border-none text-white rounded-[2px] p-1"
-                        />
-                        <button type="submit" className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[2px]">
+                        <div className="flex">
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="bg-gray-700 border-none text-white rounded-[2px] p-1" />
+
+                        </div>
+
+                        <button
+                            onClick={() => { signInSteps() }}
+                            className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[2px]">
                             {isSignUp ? "Sign Up" : "Login"}
                         </button>
-                    </form>
+                    </div>
                     <p className="mt-4 text-center text-sm">
-                        {isSignUp ? "Already have an account?" : "Don't have an account?"}
-                        <button onClick={() => setIsSignUp(!isSignUp)} className="text-blue-400 hover:underline">
+                        {isSignUp ? "Already have an account? " : "Don't have an account? "}
+                        <button
+                            onClick={() => setIsSignUp(!isSignUp)}
+                            className="text-blue-400 hover:underline">
                             {isSignUp ? "Login" : "Sign Up"}
                         </button>
                     </p>

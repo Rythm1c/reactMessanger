@@ -3,38 +3,33 @@ import { FiSend } from "react-icons/fi";
 import { BsEmojiSmile } from "react-icons/bs";
 import EmojiPicker from "emoji-picker-react";
 import { FaMicrophone } from "react-icons/fa6";
+import { sendMessage, fetchMessages } from '../config/SupabaseUtils.js';
 
 function BottomPanel({
-    setMessages,
+    mainUser,
     activeContact,
-    darkMode }) {
+    darkMode,
+    messages,
+    setMessages }) {
 
     const [showEmojis, setShowEmojis] = useState(false);
     const [input, setInput] = useState("");
-
-    const sendMessage = () => {
-        if (input.trim() && activeContact) {
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            setMessages(prevMessages => ({
-                ...prevMessages,
-                [activeContact]: [...(prevMessages[activeContact] || []), { text: input, sender: "user", time: timestamp }]
-            }));
-            setInput("");
-        }
-    };
 
     const addEmoji = (emoji) => {
         setInput(input + emoji.emoji);
     };
 
-
     return (
         <div className={`p-3 shadow-md flex items-center relative ${darkMode ? 'dark:bg-gray-800' : 'bg-white'}`}>
-            <button onClick={() => setShowEmojis(!showEmojis)} className="p-2 text-xl">
+            <button
+                onClick={() => setShowEmojis(!showEmojis)}
+                className="p-2 text-xl">
                 <BsEmojiSmile />
             </button>
             {showEmojis && (
-                <div className={`absolute bottom-12 left-2  p-2 rounded-lg shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+                <div
+                    className={`absolute bottom-12 left-2  p-2 rounded-lg shadow-lg 
+                ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
                     <EmojiPicker onEmojiClick={addEmoji} />
                 </div>
             )}
@@ -44,13 +39,23 @@ function BottomPanel({
                 placeholder="Type a message..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                onKeyDown={(e) => e.key === "Enter" &&
+                    sendMessage(mainUser.id, activeContact.id, input) &&
+                    fetchMessages(mainUser.id, activeContact.id, setMessages) &&
+                    setInput('')
+                }
                 disabled={!activeContact}
             />
             <button className="p-2 text-xl">
                 <FaMicrophone />
             </button>
-            <button onClick={sendMessage} className="p-2 text-xl" disabled={!activeContact}>
+            <button
+                onClick={() =>
+                    sendMessage(mainUser.id, activeContact.id, input) &&
+                    fetchMessages(mainUser.id, activeContact.id, setMessages) &&
+                    setInput('')}
+                className="p-2 text-xl"
+                disabled={!activeContact}>
                 <FiSend />
             </button>
         </div>

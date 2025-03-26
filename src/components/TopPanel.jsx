@@ -18,7 +18,7 @@ function TopPanel({
             <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl">
                 <HiMenuAlt2 />
             </button>
-            <h2 className="text-lg font-semibold">{activeContact || "Select a Contact"}</h2>
+            <h2 className="text-lg font-semibold">{activeContact ? activeContact.username : "Select a Contact"}</h2>
 
             <div className="relative">
 

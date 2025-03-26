@@ -3,16 +3,16 @@ import ContactsSideBar from "../components/ContactsSideBar";
 import { motion } from "framer-motion";
 import TopPanel from "../components/TopPanel.jsx";
 import BottomPanel from "../components/BottomPanel.jsx";
-import supabase from "../config/SupabaseClient.js";
+import Messages from "../components/Messages.jsx";
 
-function Chat({ }) {
-    const [messages, setMessages] = useState({});
-    const [darkMode, setDarkMode] = useState(false);
-    const [showContacts, setShowContacts] = useState(false);
+function Chat({ mainUser, setMainUser }) {
+    const [messages, setMessages] = useState([]);
+    const [darkMode, setDarkMode] = useState(true);
+    const [showContacts, setShowContacts] = useState(true);
     const [showMenu, setShowMenu] = useState(false);
     const [activeContact, setActiveContact] = useState(null);
 
-/*     supabase
+    /* supabase
         .channel('messages')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
             console.log('New message:', payload.new);
@@ -27,6 +27,9 @@ function Chat({ }) {
                 transition={{ type: "tween", duration: 0.3 }} >
 
                 <ContactsSideBar
+                    mainUser={mainUser}
+                    messages={messages}
+                    setMessages={setMessages}
                     activeContact={activeContact}
                     setShowContacts={setShowContacts}
                     setActiveContact={setActiveContact}
@@ -47,19 +50,16 @@ function Chat({ }) {
                     setDarkMode={setDarkMode} />
 
                 {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                    {activeContact && (messages[activeContact] || []).map((msg, index) => (
-                        <div key={index} className={`relative p-2 rounded-lg max-w-xs ${msg.sender === "user" ? "ml-auto bg-blue-500 text-white" : darkMode ? 'bg-gray-700 text-gray-100' : ' text-gray-900 bg-gray-300'}`}>
-                            {msg.text}
-                            <span className="absolute bottom-0 right-1 text-xs text-gray-700 dark:text-white">{msg.time}</span>
-                        </div>
-                    ))}
-                </div>
-
+                <Messages
+                    darkMode={darkMode}
+                    mainUser={mainUser}
+                    messages={messages} />
                 {/* Bottom Panel */}
                 <BottomPanel
                     darkMode={darkMode}
                     activeContact={activeContact}
+                    mainUser={mainUser}
+                    messages={messages}
                     setMessages={setMessages} />
             </motion.div>
         </div>

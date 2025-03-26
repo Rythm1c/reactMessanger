@@ -1,38 +1,31 @@
 import supabase from "./SupabaseClient";
 
-export const signUp = async (email, pass) => {
-    const { user, error } = await supabase.auth.signUp({ email, pass });
-    if (error) console.error(error);
-    return user;
-}
-
-export const login = async (email, password) => {
-    const { user, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) console.error(error);
-    return user;
-}
-
-export const logout = async () => {
-    await supabase.auth.signOut();
+export const fetchContacts = async (setContacts) => {
+    const { data, error } = await supabase
+        .from('users')
+        .select('id, username');
+    if (!error) setContacts(data);
 }
 
 export const sendMessage = async (sender, receiver, text) => {
-    const { data, error } = await supabase.from('messages').insert([
-        { sender, receiver, text }
-    ]);
+    const { data, error } = await supabase
+        .from('messages')
+        .insert([{ sender, receiver, text }]);
+
     if (error) console.error(error);
     return data;
 }
 
-
 export const deleteMessage = async (messageId) => {
-    const { error } = await supabase.from('messages').delete().match({ id: messageId });
+    const { error } = await supabase
+        .from('messages')
+        .delete()
+        .match({ id: messageId });
     // if (!error) setMessages(messages.filter(msg => msg.id !== messageId));
     if (error) console.error(error);
 }
 
-
-export const fetchMessages = async (user1, user2) => {
+export const fetchMessages = async (user1, user2, setMessages) => {
     const { data, error } = await supabase
         .from('messages')
         .select('*')
@@ -41,7 +34,8 @@ export const fetchMessages = async (user1, user2) => {
         .order('timestamp', { ascending: true });
 
     if (error) console.error(error);
-    return data;
+
+    setMessages(data);
 }
 
 
