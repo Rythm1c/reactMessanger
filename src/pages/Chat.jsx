@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import TopPanel from "../components/TopPanel.jsx";
 import BottomPanel from "../components/BottomPanel.jsx";
 import Messages from "../components/Messages.jsx";
+import supabase from "../config/SupabaseClient.js";
 
 function Chat({ mainUser, setMainUser }) {
     const [messages, setMessages] = useState([]);
@@ -12,12 +13,21 @@ function Chat({ mainUser, setMainUser }) {
     const [showMenu, setShowMenu] = useState(false);
     const [activeContact, setActiveContact] = useState(null);
 
-    /* supabase
-        .channel('messages')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-            console.log('New message:', payload.new);
-        })
-        .subscribe(); */
+    useEffect(() => {
+        if (!mainUser) return;
+
+        const messageSubscription = supabase
+            .channel('messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+                console.log('New message:', payload.new);
+                setMessages((prevMessages) => [...prevMessages, payload.new])
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(messageSubscription);
+        };
+    }, [mainUser]);
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900'}`}>
@@ -58,9 +68,7 @@ function Chat({ mainUser, setMainUser }) {
                 <BottomPanel
                     darkMode={darkMode}
                     activeContact={activeContact}
-                    mainUser={mainUser}
-                    messages={messages}
-                    setMessages={setMessages} />
+                    mainUser={mainUser} />
             </motion.div>
         </div>
     );

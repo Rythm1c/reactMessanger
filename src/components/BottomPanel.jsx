@@ -8,9 +8,7 @@ import { sendMessage, fetchMessages } from '../config/SupabaseUtils.js';
 function BottomPanel({
     mainUser,
     activeContact,
-    darkMode,
-    messages,
-    setMessages }) {
+    darkMode }) {
 
     const [showEmojis, setShowEmojis] = useState(false);
     const [input, setInput] = useState("");
@@ -40,8 +38,8 @@ function BottomPanel({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" &&
-                    sendMessage(mainUser.id, activeContact.id, input) &&
-                    fetchMessages(mainUser.id, activeContact.id, setMessages) &&
+                    sendMessage(mainUser.id, activeContact.id, input) &&/* 
+                    fetchMessages(mainUser.id, activeContact.id, setMessages) && */
                     setInput('')
                 }
                 disabled={!activeContact}
@@ -51,8 +49,8 @@ function BottomPanel({
             </button>
             <button
                 onClick={() =>
-                    sendMessage(mainUser.id, activeContact.id, input) &&
-                    fetchMessages(mainUser.id, activeContact.id, setMessages) &&
+                    sendMessage(mainUser.id, activeContact.id, input) &&/* 
+                    fetchMessages(mainUser.id, activeContact.id, setMessages) && */
                     setInput('')}
                 className="p-2 text-xl"
                 disabled={!activeContact}>

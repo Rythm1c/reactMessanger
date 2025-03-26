@@ -12,13 +12,27 @@ function TopPanel({
     activeContact
 
 }) {
+    const getInitials = (name) => {
+        return name.split(" ").map(word => word[0].toUpperCase()).join("").slice(0, 2);
+    };
+
 
     return (
         <div className={`flex items-center justify-between p-3   ${darkMode ? 'bg-gray-800 shadow-md' : 'bg-white'}`}>
             <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl">
                 <HiMenuAlt2 />
             </button>
-            <h2 className="text-lg font-semibold">{activeContact ? activeContact.username : "Select a Contact"}</h2>
+
+            <div className='flex items-center'>{activeContact ?
+                <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded-full mr-3">
+                    {getInitials(activeContact.username)}
+                </div>
+                :
+                <div>
+                </div>}
+
+                <h2 className="text-lg font-semibold">{activeContact ? activeContact.username : "Select a Contact"}</h2>
+            </div>
 
             <div className="relative">
 
