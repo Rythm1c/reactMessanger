@@ -15,7 +15,7 @@ export const signUp = async (username, pass) => {
     else alert('User registered successfully!');
 }
 
-export const login = async (username, password, setUser) => {
+export const login = async (username, password) => {
     const { data, error } = await supabase.from('users')
         .select('*')
         .eq('username', username)
@@ -27,8 +27,7 @@ export const login = async (username, password, setUser) => {
 
     if (data) console.log("signed in successfully");
 
-    setUser(data);
-    localStorage.setItem('user', JSON.stringify(data));
+    window.localStorage.setItem('user', JSON.stringify(data));
 }
 
 export const logout = async () => {

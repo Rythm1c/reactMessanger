@@ -13,19 +13,20 @@ export const sendMessage = async (sender, receiver, text) => {
         .insert([{ sender, receiver, text }]);
 
     if (error) console.error(error);
+
     return data;
 }
 
-export const deleteMessage = async (messageId) => {
+/* export const deleteMessage = async (messageId) => {
     const { error } = await supabase
         .from('messages')
         .delete()
         .match({ id: messageId });
     // if (!error) setMessages(messages.filter(msg => msg.id !== messageId));
     if (error) console.error(error);
-}
+} */
 
-export const fetchMessages = async (user1, user2, setMessages) => {
+export const fetchMessages = async (user1, user2) => {
     const { data, error } = await supabase
         .from('messages')
         .select('*')
@@ -35,9 +36,26 @@ export const fetchMessages = async (user1, user2, setMessages) => {
 
     if (error) console.error(error);
 
-    setMessages(data);
+    return data;
 }
 
+async function uploadFile(file) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `chat-uploads/${fileName}`;
+
+    const { data, error } = await supabase.storage.from("chat-uploads").upload(filePath, file);
+
+    if (error) {
+        console.error("Error uploading file:", error);
+        return null;
+    }
+
+    return {
+        url: `${supabase.storage.from("chat-uploads").getPublicUrl(filePath).data.publicUrl}`,
+        type: file.type.startsWith("image") ? "image" : file.type.startsWith("video") ? "video" : "file"
+    };
+}
 
 /* export const uploadProfilePicture = async (file, userId) => {
     const { data, error } = await supabase.storage
@@ -53,3 +71,18 @@ export const getProfilePicture = async (userId) => {
 }
 
  */
+
+/* export const uploadImage = async (file) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `chat-images/${fileName}`;
+
+    const { data, error } = await supabase.storage.from("chat-images").upload(filePath, file);
+
+    if (error) {
+        console.error("Error uploading file:", error);
+        return null;
+    }
+
+    return `${supabase.storage.from("chat-images").getPublicUrl(filePath).data.publicUrl}`;
+} */

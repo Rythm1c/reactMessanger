@@ -6,72 +6,93 @@ import BottomPanel from "../components/BottomPanel.jsx";
 import Messages from "../components/Messages.jsx";
 import supabase from "../config/SupabaseClient.js";
 
-function Chat({ mainUser, setMainUser }) {
-    const [messages, setMessages] = useState([]);
-    const [darkMode, setDarkMode] = useState(true);
-    const [showContacts, setShowContacts] = useState(true);
-    const [showMenu, setShowMenu] = useState(false);
-    const [activeContact, setActiveContact] = useState(null);
+function Chat() {
+  const [user, setUser] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [darkMode, setDarkMode] = useState(true);
+  const [showContacts, setShowContacts] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeContact, setActiveContact] = useState(null);
 
-    useEffect(() => {
-        if (!mainUser) return;
+  useEffect(() => {
+    const storedUser = window.localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
 
-        const messageSubscription = supabase
-            .channel('messages')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-                console.log('New message:', payload.new);
-                setMessages((prevMessages) => [...prevMessages, payload.new])
-            })
-            .subscribe();
+  useEffect(() => {
+    if (!user) return;
 
-        return () => {
-            supabase.removeChannel(messageSubscription);
-        };
-    }, [mainUser]);
+    const messageSubscription = supabase
+      .channel("messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+        },
+        (payload) => {
+          setMessages((prevMessages) => [...prevMessages, payload.new]);
+        },
+      )
+      .subscribe();
 
-    return (
-        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900'}`}>
-            <motion.div
-                initial={{ x: -300 }}
-                animate={{ x: showContacts ? 0 : -300 }}
-                transition={{ type: "tween", duration: 0.3 }} >
+    return () => {
+      supabase.removeChannel(messageSubscription);
+    };
+  }, [user]);
 
-                <ContactsSideBar
-                    mainUser={mainUser}
-                    messages={messages}
-                    setMessages={setMessages}
-                    activeContact={activeContact}
-                    setShowContacts={setShowContacts}
-                    setActiveContact={setActiveContact}
-                    darkMode={darkMode} />
+  return user ? (
+    <div
+      className={`flex h-screen ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"}`}
+    >
+      <motion.div
+        initial={{ x: -300 }}
+        animate={{ x: showContacts ? 0 : -300 }}
+        transition={{ type: "tween", duration: 0.3 }}
+      >
+        <ContactsSideBar
+          mainUser={user}
+          messages={messages}
+          setMessages={setMessages}
+          activeContact={activeContact}
+          setShowContacts={setShowContacts}
+          setActiveContact={setActiveContact}
+          darkMode={darkMode}
+        />
+      </motion.div>
+      {/* Chat Section */}
+      <motion.div
+        animate={{ marginLeft: showContacts ? "16rem" : "0rem" }}
+        transition={{ type: "tween", duration: 0.3 }}
+        className="flex flex-col flex-1"
+      >
+        <TopPanel
+          showContacts={showContacts}
+          setShowContacts={setShowContacts}
+          showMenu={showMenu}
+          setShowMenu={setShowMenu}
+          activeContact={activeContact}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
 
-            </motion.div>
-            {/* Chat Section */}
-            <motion.div
-                animate={{ marginLeft: showContacts ? "16rem" : "0rem" }}
-                transition={{ type: "tween", duration: 0.3 }}
-                className="flex flex-col flex-1">
-                <TopPanel
-                    showContacts={showContacts}
-                    setShowContacts={setShowContacts}
-                    showMenu={showMenu} setShowMenu={setShowMenu}
-                    activeContact={activeContact}
-                    darkMode={darkMode}
-                    setDarkMode={setDarkMode} />
-
-                {/* Chat Messages */}
-                <Messages
-                    darkMode={darkMode}
-                    mainUser={mainUser}
-                    messages={messages} />
-                {/* Bottom Panel */}
-                <BottomPanel
-                    darkMode={darkMode}
-                    activeContact={activeContact}
-                    mainUser={mainUser} />
-            </motion.div>
-        </div>
-    );
+        {/* Chat Messages */}
+        <Messages
+          mainUser={user}
+          darkMode={darkMode}
+          messages={messages} />
+        {/* Bottom Panel */}
+        <BottomPanel
+          darkMode={darkMode}
+          activeContact={activeContact}
+          mainUser={user}
+        />
+      </motion.div>
+    </div>
+  ) : (
+    <div>loading...</div>
+  );
 }
 
-export default Chat
+export default Chat;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { HiMenuAlt2 } from "react-icons/hi";
-import { IoEllipsisVertical } from "react-icons/io5";
+import { IoEllipsisVertical, IoCall, IoVideocam } from "react-icons/io5";
 import DropDown from './DropDown';
 import { motion } from "framer-motion";
 
@@ -13,13 +13,14 @@ function TopPanel({
 
 }) {
     const getInitials = (name) => {
-        return name.split(" ").map(word => word[0].toUpperCase()).join("").slice(0, 2);
+        return name.split(" ").map(word => word[0].toUpperCase())
+            .join("")
+            .slice(0, 2);
     };
 
-
     return (
-        <div className={`flex items-center justify-between p-3   ${darkMode ? 'bg-gray-800 shadow-md' : 'bg-white'}`}>
-            <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl">
+        <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-800 shadow-md' : 'bg-white'}`}>
+            <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl hover:cursor-pointer ">
                 <HiMenuAlt2 />
             </button>
 
@@ -34,25 +35,37 @@ function TopPanel({
                 <h2 className="text-lg font-semibold">{activeContact ? activeContact.username : "Select a Contact"}</h2>
             </div>
 
-            <div className="relative">
+            <div className="relative flex gap-5">
+                <div className=''>
+                    <button className="p-2 text-xl hover:border">
+                        <IoCall />
+                    </button>
 
-                <button onClick={() => setDarkMode(!darkMode)} className="p-2 text-xl">
-                    {darkMode ? <MdLightMode /> : <MdDarkMode />}
-                </button>
+                    <button className="p-2 text-xl hover:border">
+                        <IoVideocam />
+                    </button>
+                </div>
 
-                <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-xl">
-                    <IoEllipsisVertical />
-                </button>
+                <div>
+                    <button onClick={() => setDarkMode(!darkMode)} className="p-2 text-xl hover:border">
+                        {darkMode ? <MdLightMode /> : <MdDarkMode />}
+                    </button>
 
-                {showMenu && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}>
-                        <DropDown darkMode={darkMode} />
-                    </motion.div>
-                )}
+                    <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-xl hover:border">
+                        <IoEllipsisVertical />
+                    </button>
+
+                    {showMenu && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.2 }}>
+                            <DropDown darkMode={darkMode} />
+                        </motion.div>
+                    )}
+                </div>
+
             </div>
 
         </div>
