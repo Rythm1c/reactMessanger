@@ -35,7 +35,7 @@ function TopPanel({
                 <h2 className="text-lg font-semibold">{activeContact ? activeContact.username : "Select a Contact"}</h2>
             </div>
 
-            <div className="relative flex gap-5">
+            <div className="relative flex gap-15">
                 <div className=''>
                     <button className="p-2 text-xl hover:border">
                         <IoCall />

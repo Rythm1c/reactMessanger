@@ -38,9 +38,12 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
         </div>
       )}
 
-      <button className="p-2 text-xl">
-        <GrDocumentUpload />
-      </button>
+      <div className="p-2 text-xl">
+        <label htmlFor="file-upload">
+          <GrDocumentUpload />
+        </label>
+        <input type="file" className="hidden" id="file-upload" />
+      </div>
 
       <input
         type="text"

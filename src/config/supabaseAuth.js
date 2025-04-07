@@ -30,6 +30,6 @@ export const login = async (username, password) => {
     window.localStorage.setItem('user', JSON.stringify(data));
 }
 
-export const logout = async () => {
+/* export const logout = async () => {
     await supabase.auth.signOut();
-}
+} */

@@ -53,6 +53,7 @@ function Chat() {
       >
         <ContactsSideBar
           mainUser={user}
+          setUser={setUser}
           messages={messages}
           setMessages={setMessages}
           activeContact={activeContact}
@@ -61,7 +62,6 @@ function Chat() {
           darkMode={darkMode}
         />
       </motion.div>
-      {/* Chat Section */}
       <motion.div
         animate={{ marginLeft: showContacts ? "16rem" : "0rem" }}
         transition={{ type: "tween", duration: 0.3 }}
@@ -77,12 +77,11 @@ function Chat() {
           setDarkMode={setDarkMode}
         />
 
-        {/* Chat Messages */}
         <Messages
           mainUser={user}
           darkMode={darkMode}
           messages={messages} />
-        {/* Bottom Panel */}
+
         <BottomPanel
           darkMode={darkMode}
           activeContact={activeContact}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { signUp, login } from "../config/supabaseAuth.js";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoMdEye } from "react-icons/io";
 import { IoEyeOff } from "react-icons/io5";
 

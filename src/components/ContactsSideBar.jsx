@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlus } from "react-icons/ai";
+import { IoLogOutOutline } from "react-icons/io5";
 import { fetchMessages, fetchContacts } from '../config/SupabaseUtils.js'
+import { useNavigate } from "react-router-dom";
 
 function ContactsSideBar({
     mainUser,
+    setUser,
     activeContact,
     setActiveContact,
     setShowContacts,
@@ -18,31 +21,33 @@ function ContactsSideBar({
         fetchContacts(setContacts);
     }, []);
 
+    const theme = () => {
+        if (darkMode) {
+            return 'bg-gray-700 border-gray-600'
+        }
+        else {
+            return 'bg-gray-200'
+        }
+    }
+
     const highlightActive = (contact) => {
         if (activeContact) {
             if (contact.username === activeContact.username) {
                 return 'bg-blue-300';
             }
             else {
-                if (darkMode) {
-                    return 'bg-gray-700 border-gray-600'
-                }
-                else {
-                    return 'bg-gray-200'
-                }
+                return theme();
             }
         } else {
-            if (darkMode) {
-                return 'bg-gray-700 border-gray-600'
-            }
-            else {
-                return 'bg-gray-200'
-            }
+            return theme();
         }
     }
 
     const getInitials = (name) => {
-        return name.split(" ").map(word => word[0].toUpperCase()).join("").slice(0, 2);
+        return name.split(" ").map(word => word[0]
+            .toUpperCase())
+            .join("")
+            .slice(0, 2);
     };
 
     const loadContact = async (contact) => {
@@ -50,6 +55,18 @@ function ContactsSideBar({
         let data = await fetchMessages(mainUser.id, contact.id);
         setMessages(data);
         setShowContacts(false);
+    }
+
+    let nav = useNavigate();
+
+    const logoutEvents = () => {
+        if (confirm("do you want to logout?")) {
+            setUser(null);
+            window
+                .localStorage
+                .removeItem('user');
+            nav("/");
+        }
     }
 
     return (<div
@@ -61,7 +78,7 @@ function ContactsSideBar({
                 {getInitials(mainUser.username)}
             </div>
             <div className='text-center'>
-                {mainUser.username}
+                {mainUser.username}(you)
             </div>
         </div>
 
@@ -82,9 +99,7 @@ function ContactsSideBar({
                 .map((contact, index) => (
                     <div key={index}
                         className={`flex items-center p-2 rounded-[10px] my-[5px] hover:cursor-pointer ${highlightActive(contact)}`}
-                        onClick={() => {
-                            loadContact(contact)
-                        }}>
+                        onClick={() => loadContact(contact)}>
                         <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded-full mr-3">
                             {getInitials(contact.username)}
                         </div>
@@ -100,6 +115,13 @@ function ContactsSideBar({
             onClick={() => { }}>
 
             <AiOutlinePlus className="mr-1" /> Add Contact
+        </button>
+
+        <button
+            className="mt-3 p-2 flex items-center justify-center bg-red-500 hover:bg-red-700 text-white rounded-lg shadow-md"
+            onClick={logoutEvents}>
+
+            <IoLogOutOutline className="mr-1" /> logout
         </button>
     </div>
     )
