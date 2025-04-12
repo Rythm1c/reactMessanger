@@ -24,9 +24,8 @@ function Authentication() {
 
   return (
     <div
-      className={`flex min-h-screen items-center justify-center bg-gray-900 text-white`}
-    >
-      <div className="w-96 bg-gray-800 shadow-lg p-1">
+      className={`flex min-h-screen items-center justify-center bg-gray-600 text-white`}>
+      <div className="w-96 bg-gray-700 shadow-lg p-1">
         <div>
           <div className=" text-center text-xl">
             {isSignUp ? "Sign Up" : "Login"}
@@ -40,7 +39,7 @@ function Authentication() {
               placeholder="Name"
               onChange={(e) => setUserName(e.target.value)}
               required
-              className="bg-gray-700 border-none text-white rounded-[2px] p-1"
+              className="bg-gray-800 border-none text-white rounded-[2px] p-1"
             />
 
             <div className="flex">
@@ -50,7 +49,7 @@ function Authentication() {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-gray-700 border-none text-white rounded-[2px] p-1"
+                className="bg-gray-800 border-none text-white rounded-[2px] p-1"
               />
             </div>
 

@@ -44,7 +44,7 @@ function Chat() {
 
   return user ? (
     <div
-      className={`flex h-screen ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"}`}
+      className={`flex h-screen ${darkMode ? "bg-gray-500 text-gray-100" : "bg-gray-100 text-gray-900"}`}
     >
       <motion.div
         initial={{ x: -300 }}

@@ -1,16 +1,51 @@
 import supabase from "./SupabaseClient";
 
 export const fetchContacts = async (setContacts) => {
-    const { data, error } = await supabase
-        .from('users')
-        .select('id, username');
+    const { data, error } = await
+        supabase
+            .from('users')
+            .select('id, username');
     if (!error) setContacts(data);
 }
 
-export const sendMessage = async (sender, receiver, text) => {
+async function uploadImage(file) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `chat-images/${fileName}`;
+
+    const { data, error } = await supabase.storage.from("chat-images").upload(filePath, file);
+
+    if (error) {
+        console.error("Error uploading file:", error);
+        return null;
+    }
+
+    return `${supabase.storage.from("chat-images").getPublicUrl(filePath).data.publicUrl}`;
+}
+
+// for private files
+/* export const downloadImage = async (url) => {
+    const { data, error } = await supabase.storage.from("chat-images").download(url);
+
+    if (error) {
+        console.error("Error downloading file:", error);
+        return null;
+    }
+
+    const blob = new Blob([data], { type: data.type });
+    return URL.createObjectURL(blob);
+} */
+
+export const sendMessage = async (sender, receiver, text, image = null) => {
+
+    let imageURL = null;
+    if (image) {
+        imageURL = await uploadImage(image);
+    }
+
     const { data, error } = await supabase
         .from('messages')
-        .insert([{ sender, receiver, text }]);
+        .insert([{ sender, receiver, text, imageURL }]);
 
     if (error) console.error(error);
 
@@ -39,6 +74,7 @@ export const fetchMessages = async (user1, user2) => {
     return data;
 }
 
+
 async function uploadFile(file) {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
@@ -57,32 +93,3 @@ async function uploadFile(file) {
     };
 }
 
-/* export const uploadProfilePicture = async (file, userId) => {
-    const { data, error } = await supabase.storage
-        .from('avatars')
-        .upload(`public/${userId}`, file);
-
-    if (error) console.error(error);
-    return data;
-}
-
-export const getProfilePicture = async (userId) => {
-    return supabase.storage.from('avatars').getPublicUrl(`public/${userId}`);
-}
-
- */
-
-/* export const uploadImage = async (file) => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `chat-images/${fileName}`;
-
-    const { data, error } = await supabase.storage.from("chat-images").upload(filePath, file);
-
-    if (error) {
-        console.error("Error uploading file:", error);
-        return null;
-    }
-
-    return `${supabase.storage.from("chat-images").getPublicUrl(filePath).data.publicUrl}`;
-} */

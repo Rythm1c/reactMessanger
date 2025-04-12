@@ -13,14 +13,16 @@ function TopPanel({
 
 }) {
     const getInitials = (name) => {
-        return name.split(" ").map(word => word[0].toUpperCase())
+        return name
+            .split(" ")
+            .map(word => word[0].toUpperCase())
             .join("")
             .slice(0, 2);
     };
 
     return (
-        <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-800 shadow-md' : 'bg-white'}`}>
-            <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl hover:cursor-pointer ">
+        <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-700 shadow-md' : 'bg-white'}`}>
+            <button onClick={() => setShowContacts(!showContacts)} className="p-2 text-xl hover:cursor-pointer hover:border">
                 <HiMenuAlt2 />
             </button>
 

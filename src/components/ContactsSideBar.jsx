@@ -23,7 +23,7 @@ function ContactsSideBar({
 
     const theme = () => {
         if (darkMode) {
-            return 'bg-gray-700 border-gray-600'
+            return 'bg-gray-600 border-gray-600'
         }
         else {
             return 'bg-gray-200'
@@ -71,7 +71,7 @@ function ContactsSideBar({
 
     return (<div
         className={`absolute top-0 left-0 h-full w-64  shadow-md p-4 flex flex-col 
-        ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
 
         <div className='mb-5'>
             <div className="w-20 h-20 flex items-center justify-center bg-gray-500 text-white text-3xl font-bold rounded-full m-[auto]">
@@ -86,7 +86,7 @@ function ContactsSideBar({
             type="text"
             placeholder="Search contacts..."
             className={`p-2 mb-3 rounded-lg outline-none 
-                ${darkMode ? 'text-gray-100 bg-gray-700' : 'bg-gray-200 text-gray-900'}`}
+                ${darkMode ? 'text-gray-100 bg-gray-500' : 'bg-gray-200 text-gray-900'}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)} />
 
