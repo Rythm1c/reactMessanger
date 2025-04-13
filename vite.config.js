@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base:"https://Rythm1c.github.io/reactMessanger/",
+  base: "/Auth",
   plugins: [
     react(),
     tailwindcss(),

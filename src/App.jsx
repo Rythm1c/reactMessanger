@@ -7,7 +7,7 @@ function App() {
   return (
     <div className='h-full'>
       <Routes>
-        <Route path='/' element={<Authentication />} />
+        <Route path='/Auth' element={<Authentication />} />
         <Route path='/ChatWindow' element={<Chat />} />
       </Routes>
     </div>

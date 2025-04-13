@@ -65,7 +65,7 @@ function ContactsSideBar({
             window
                 .localStorage
                 .removeItem('user');
-            nav("/");
+            nav("/Auth");
         }
     }
 
