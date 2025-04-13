@@ -25,14 +25,14 @@ function Authentication() {
   return (
     <div
       className={`flex min-h-screen items-center justify-center bg-gray-600 text-white`}>
-      <div className="w-96 bg-gray-700 shadow-lg p-1">
+      <div className="w-140 bg-gray-700 shadow-2xl p-1">
         <div>
           <div className=" text-center text-xl">
             {isSignUp ? "Sign Up" : "Login"}
           </div>
         </div>
-        <div>
-          <div className="space-y-4 flex flex-col items-center">
+        <div className="mt-4">
+          <div className="space-y-10 flex flex-col items-center">
             <input
               type="text"
               name="name"
@@ -55,7 +55,7 @@ function Authentication() {
 
             <button
               onClick={auth}
-              className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[2px]"
+              className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[3px]"
             >
               {isSignUp ? "Sign Up" : "Login"}
             </button>
