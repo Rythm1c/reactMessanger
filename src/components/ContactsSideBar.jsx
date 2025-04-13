@@ -111,8 +111,7 @@ function ContactsSideBar({
                 ))}
         </div>
         <button
-            className="mt-3 p-2 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow-md"
-            onClick={() => { }}>
+            className="mt-3 p-2 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow-md">
 
             <AiOutlinePlus className="mr-1" /> Add Contact
         </button>

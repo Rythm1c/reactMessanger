@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Rythm1c.github.io/reactMessanger",
+  "homepage": "https://Rythm1c.github.io/reactMessanger/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
