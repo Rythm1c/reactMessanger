@@ -17,6 +17,8 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
     setInput(input + emoji.emoji);
   };
 
+
+
   const handleSendMessage = async () => {
     if (input.trim() === "") {
       console.log("Input is empty");
@@ -24,10 +26,18 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
     }
 
     if (selectedFile)
-      await sendMessage(mainUser.id, activeContact.id, input, selectedFile);
+      await sendMessage(
+        mainUser.id,
+        activeContact.id,
+        input,
+        selectedFile);
     else
-      await sendMessage(mainUser.id, activeContact.id, input);
+      await sendMessage(
+        mainUser.id,
+        activeContact.id,
+        input);
 
+    setShowFilePreview(false);
     setSelectedFile(null);
     setInput("");
   };
@@ -57,7 +67,7 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
       </div>
       <input
         type="file"
-        accept="image/*"
+        accept="image/*,video/*,.pdf,.docx,.zip"
         onChange={(e) => {
           const file = e.target.files[0];
           if (file) {
@@ -78,7 +88,7 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
             className=" hover:text-red-500">
             <IoCloseCircleOutline />
           </button>
-          <p >Selected File: {selectedFile.name}</p>
+          <p>Selected File: <b><u>{selectedFile.name}</u></b></p>
         </div>
       )}
 
