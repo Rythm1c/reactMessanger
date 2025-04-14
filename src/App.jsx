@@ -8,7 +8,7 @@ function App() {
     <div className='h-full'>
       <Routes>
         <Route path='/reactMessanger' element={<Authentication />} />
-        <Route path='/ChatWindow' element={<Chat />} />
+        <Route path='/reactMessanger/ChatWindow' element={<Chat />} />
       </Routes>
     </div>
   )
