@@ -16,7 +16,7 @@ function Authentication() {
 
     let user = JSON.parse(window.localStorage.getItem("user"));
     if (user) {
-      nav("/reactMessanger/ChatWindow");
+      nav("/ChatWindow");
     }
   };
 
