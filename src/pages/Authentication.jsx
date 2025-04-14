@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { signUp, login } from "../config/supabaseAuth.js";
 import { useNavigate } from "react-router-dom";
-import { IoMdEye } from "react-icons/io";
-import { IoEyeOff } from "react-icons/io5";
 
 function Authentication() {
   const [isSignUp, setIsSignUp] = useState(false);
