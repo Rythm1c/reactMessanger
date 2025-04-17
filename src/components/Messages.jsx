@@ -23,6 +23,14 @@ function Messages({
 
     }
 
+    const messagesEndRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
     return (
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
             {
@@ -36,7 +44,7 @@ function Messages({
                         <div key={index} className={`max-w-xs flex flex-col ${msg.sender === mainUser.id ? "ml-auto text-right" : ""}`}>
                             <div className={` p-2 rounded-lg`}>
 
-                                {msg.fileTYPE === "image" &&
+                                {msg.file_type === "image" &&
                                     <div className=''>
 
                                         {
@@ -44,21 +52,21 @@ function Messages({
                                                 <div className='flex'>
                                                     <div className='w-10 relative'>
                                                         <a
-                                                            href={msg.fileURL}
-                                                            download={`${msg.fileURL.split('/').pop()}`}
+                                                            href={msg.file_url}
+                                                            download={`${msg.file_url.split('/').pop()}`}
                                                             className={`${darkMode ? 'text-white' : 'text-black'} absolute bottom-0 left-1 hover:border rounded-full p-1`}>
                                                             <IoMdDownload />
                                                         </a>
                                                     </div>
-                                                    <img src={msg.fileURL} alt="" className='w-full rounded-md mt-2' />
+                                                    <img src={msg.file_url} alt="" className='w-full rounded-md mt-2' />
                                                 </div> :
                                                 <div className='flex'>
 
-                                                    <img src={msg.fileURL} alt="" className='w-full rounded-md mt-2' />
+                                                    <img src={msg.file_url} alt="" className='w-full rounded-md mt-2' />
                                                     <div className='w-10 relative'>
                                                         <a
-                                                            href={msg.fileURL}
-                                                            download={`${msg.fileURL.split('/').pop()}`}
+                                                            href={msg.file_url}
+                                                            download={`${msg.file_url.split('/').pop()}`}
                                                             className={`${darkMode ? 'text-white' : 'text-black'} absolute bottom-0 left-1 hover:border rounded-full p-1`}>
                                                             <IoMdDownload />
                                                         </a>
@@ -70,7 +78,7 @@ function Messages({
 
 
 
-                                {msg.fileTYPE === "video" &&
+                                {msg.file_type === "video" &&
                                     <div className=''>
 
                                         {
@@ -78,15 +86,15 @@ function Messages({
                                                 <div className='flex'>
                                                     <div className='w-10 relative'>
                                                         <a
-                                                            href={msg.fileURL}
-                                                            download={`${msg.fileURL.split('/').pop()}`}
+                                                            href={msg.file_url}
+                                                            download={`${msg.file_url.split('/').pop()}`}
                                                             className={`${darkMode ? 'text-white' : 'text-black'} absolute bottom-0 left-1 hover:border rounded-full p-1`}>
                                                             <IoMdDownload />
                                                         </a>
                                                     </div>
 
                                                     <video alt="" controls className='w-full rounded-md mt-2' >
-                                                        <source src={msg.fileURL} type="video/mp4" />
+                                                        <source src={msg.file_url} type="video/mp4" />
                                                         Your browser does not support the video tag.
                                                     </video>
 
@@ -94,14 +102,14 @@ function Messages({
                                                 <div className='flex'>
 
                                                     <video alt="" controls className='w-full rounded-md mt-2' >
-                                                        <source src={msg.fileURL} type="video/mp4" />
+                                                        <source src={msg.file_url} type="video/mp4" />
                                                         Your browser does not support the video tag.
                                                     </video>
 
                                                     <div className='w-10 relative'>
                                                         <a
-                                                            href={msg.fileURL}
-                                                            download={`${msg.fileURL.split('/').pop()}`}
+                                                            href={msg.file_url}
+                                                            download={`${msg.file_url.split('/').pop()}`}
                                                             className={`${darkMode ? 'text-white' : 'text-black'} absolute bottom-0 left-1 hover:border rounded-full p-1`}>
                                                             <IoMdDownload />
                                                         </a>
@@ -115,16 +123,18 @@ function Messages({
                             </div>
                             <div className=''>
                                 <div className={`p-[10px] inline-block rounded-sm ${textBoxTheme(msg.sender === mainUser.id)}`}>
-                                    {msg.text}
+                                    {msg.content}
                                 </div>
                             </div>
                             <div
                                 className={`text-xs ${msg.sender === mainUser.id ? "text-right" : ""} ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                {new Date(msg.timestamp).toLocaleTimeString()}
+                                {new Date(msg.created_at).toLocaleTimeString()}
                             </div>
                         </div>
                     )
             }
+
+            <div ref={messagesEndRef} />
         </div>
     )
 }

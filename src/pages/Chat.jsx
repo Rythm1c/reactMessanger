@@ -5,6 +5,7 @@ import TopPanel from "../components/TopPanel.jsx";
 import BottomPanel from "../components/BottomPanel.jsx";
 import Messages from "../components/Messages.jsx";
 import supabase from "../config/SupabaseClient.js";
+import { fetchMessages, fetchContacts, getProfile } from '../config/SupabaseUtils.js'
 
 function Chat() {
   const [user, setUser] = useState(null);
@@ -44,13 +45,11 @@ function Chat() {
 
   return user ? (
     <div
-      className={`flex h-screen ${darkMode ? "bg-gray-600 text-gray-100" : "bg-gray-100 text-gray-900"}`}
-    >
+      className={`flex h-screen ${darkMode ? "bg-gray-600 text-gray-100" : "bg-gray-100 text-gray-900"}`}>
       <motion.div
         initial={{ x: -300 }}
         animate={{ x: showContacts ? 0 : -300 }}
-        transition={{ type: "tween", duration: 0.3 }}
-      >
+        transition={{ type: "tween", duration: 0.3 }} >
         <ContactsSideBar
           mainUser={user}
           setUser={setUser}
@@ -59,14 +58,12 @@ function Chat() {
           activeContact={activeContact}
           setShowContacts={setShowContacts}
           setActiveContact={setActiveContact}
-          darkMode={darkMode}
-        />
+          darkMode={darkMode} />
       </motion.div>
       <motion.div
         animate={{ marginLeft: showContacts ? "16rem" : "0rem" }}
         transition={{ type: "tween", duration: 0.3 }}
-        className="flex flex-col flex-1"
-      >
+        className="flex flex-col flex-1" >
         <TopPanel
           showContacts={showContacts}
           setShowContacts={setShowContacts}
@@ -74,8 +71,7 @@ function Chat() {
           setShowMenu={setShowMenu}
           activeContact={activeContact}
           darkMode={darkMode}
-          setDarkMode={setDarkMode}
-        />
+          setDarkMode={setDarkMode} />
 
         <Messages
           mainUser={user}
@@ -85,8 +81,7 @@ function Chat() {
         <BottomPanel
           darkMode={darkMode}
           activeContact={activeContact}
-          mainUser={user}
-        />
+          mainUser={user} />
       </motion.div>
     </div>
   ) : (

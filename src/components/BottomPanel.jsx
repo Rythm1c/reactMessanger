@@ -48,7 +48,7 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
 
       <button
         onClick={() => setShowEmojis(!showEmojis)}
-        className="p-2 text-xl hover:border" >
+        className="p-2 text-xl hover:bg-gray-500" >
         <BsEmojiSmile />
       </button>
 
@@ -59,7 +59,7 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
         </div>
       )}
 
-      <div className="p-2 text-xl  hover:border">
+      <div className="p-2 text-xl  hover:bg-gray-500">
         <label htmlFor="file-upload" className="hover:cursor-pointer">
           <IoAttach />
         </label>
@@ -103,13 +103,13 @@ function BottomPanel({ mainUser, activeContact, darkMode }) {
         onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         disabled={!activeContact} />
 
-      <button className="p-2 text-xl hover:border">
+      <button className="p-2 text-xl hover:bg-gray-500">
         <FaMicrophone />
       </button>
 
       <button
         onClick={() => handleSendMessage()}
-        className="p-2 text-xl hover:border"
+        className="p-2 text-xl hover:bg-gray-500"
         disabled={!activeContact}>
 
         <FiSend />

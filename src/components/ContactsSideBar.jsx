@@ -1,25 +1,47 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoLogOutOutline } from "react-icons/io5";
-import { fetchMessages, fetchContacts } from '../config/SupabaseUtils.js'
+import { fetchMessages, fetchContacts, getProfile, addContactToList } from '../config/SupabaseUtils.js'
 import { useNavigate } from "react-router-dom";
+import { logout } from '../config/supabaseAuth.js';
+
+import { Modal } from '@mui/material';
 
 function ContactsSideBar({
     mainUser,
-    setUser,
     activeContact,
     setActiveContact,
     setShowContacts,
     setMessages,
     darkMode }) {
 
+
     const [contacts, setContacts] = useState([]);
+    const [profiles, setProfiles] = useState([]);
     const [search, setSearch] = useState("");
+    const [prof, setProf] = useState(null);
+    const [addContact, setAddContact] = useState(false);
+    const [newContactEmail, setNewContactEmail] = useState("");
+
+    const getData = async () => {
+        setContacts(await fetchContacts(mainUser.id));
+        setProf(await getProfile(mainUser.id));
+
+    }
 
     useEffect(() => {
-        console.log(mainUser);
-        fetchContacts(setContacts);
+        let data = [];
+        contacts.forEach(async (contact) => {
+            data = [...data, await getProfile(contact.contact_id)];
+            setProfiles(data);
+        })
+    }, [contacts]);
+
+
+    useEffect(() => {
+        getData();
     }, []);
+
 
     const theme = () => {
         if (darkMode) {
@@ -32,7 +54,7 @@ function ContactsSideBar({
 
     const highlightActive = (contact) => {
         if (activeContact) {
-            if (contact.username === activeContact.username) {
+            if (contact.name === activeContact.name) {
                 return 'bg-blue-300';
             }
             else {
@@ -44,8 +66,9 @@ function ContactsSideBar({
     }
 
     const getInitials = (name) => {
-        return name.split(" ").map(word => word[0]
-            .toUpperCase())
+        return name
+            .split(" ")
+            .map(word => word[0].toUpperCase())
             .join("")
             .slice(0, 2);
     };
@@ -53,19 +76,18 @@ function ContactsSideBar({
     const loadContact = async (contact) => {
         setActiveContact(contact);
         let data = await fetchMessages(mainUser.id, contact.id);
-        setMessages(data);
+        if (data) setMessages(data);
         setShowContacts(false);
     }
 
     let nav = useNavigate();
 
-    const logoutEvents = () => {
+    const logoutEvents = async () => {
         if (confirm("do you want to logout?")) {
-            setUser(null);
-            window
-                .localStorage
-                .removeItem('user');
-            nav("/");
+            await logout();
+            setActiveContact(null);
+            setMessages([]);
+            nav('/');
         }
     }
 
@@ -73,12 +95,12 @@ function ContactsSideBar({
         className={`absolute top-0 left-0 h-full w-64  shadow-md p-4 flex flex-col 
         ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
 
-        <div className='mb-5'>
+        <div className={`mb-5  ${darkMode ? 'bg-gray-600' : 'bg-gray-200'} rounded-md p-2`}>
             <div className="w-20 h-20 flex items-center justify-center bg-gray-500 text-white text-3xl font-bold rounded-full m-[auto]">
-                {getInitials(mainUser.username)}
+                {getInitials(prof?.name || "...")}
             </div>
             <div className='text-center'>
-                {mainUser.username}(you)
+                <p>{prof?.name || "..."}</p>
             </div>
         </div>
 
@@ -91,36 +113,63 @@ function ContactsSideBar({
             onChange={(e) => setSearch(e.target.value)} />
 
         <div className="flex-1 overflow-y-auto">
-            {contacts.filter((contact) =>
-                contact
-                    .username
+            {profiles.filter((profile) =>
+                profile
+                    .name
                     .toLowerCase()
-                    .includes(search.toLowerCase()) && mainUser.username !== contact.username)
-                .map((contact, index) => (
+                    .includes(search.toLowerCase()))
+                .map((profile, index) => (
                     <div key={index}
-                        className={`flex items-center p-2 rounded-[10px] my-[5px] hover:cursor-pointer ${highlightActive(contact)}`}
-                        onClick={() => loadContact(contact)}>
+                        className={`flex items-center p-2 rounded-[10px] my-[5px] hover:cursor-pointer ${highlightActive(profile)}`}
+                        onClick={() => loadContact(profile)}>
                         <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded-full mr-3">
-                            {getInitials(contact.username)}
+                            {getInitials(profile.name)}
                         </div>
                         <span>
-                            {contact.username}
+                            {profile.name}
                         </span>
 
                     </div>
                 ))}
         </div>
-        <button
-            className="mt-3 p-2 flex items-center justify-center bg-blue-500 text-white rounded-lg shadow-md">
 
-            <AiOutlinePlus className="mr-1" /> Add Contact
+        {
+            addContact &&
+            <div className={`flex flex-col items-center text-center px-2 py-5 ${darkMode ? 'bg-gray-600 text-white' : 'bg-gray-300 text-black'} rounded-lg `}>
+                <p>Enter contact's email</p>
+                <div className='flex flex-col items-center gap-1'>
+                    <input
+                        type="email"
+                        placeholder=""
+                        value={newContactEmail}
+                        className={`p-2 w-full mb-3 rounded-lg outline-none ${darkMode ? 'bg-gray-400 text-white' : 'bg-gray-100 text-black'} `}
+                        onChange={(e) => setNewContactEmail(e.target.value)}
+                    />
+                    <button
+                        className='bg-blue-500 hover:bg-blue-600 p-3 rounded-md text-white'
+                        onClick={
+                            async () => {
+
+                                await addContactToList(mainUser.id, newContactEmail);
+                                setNewContactEmail("");
+                            }}>
+                        <AiOutlinePlus />
+                    </button>
+                </div>
+
+            </div>
+        }
+        <button
+            className="mt-3 p-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md"
+            onClick={() => setAddContact(!addContact)}>
+            Add Contact
         </button>
 
         <button
             className="mt-3 p-2 flex items-center justify-center bg-red-500 hover:bg-red-700 text-white rounded-lg shadow-md"
             onClick={logoutEvents}>
-
-            <IoLogOutOutline className="mr-1" /> logout
+            <IoLogOutOutline className="mr-1" />
+            logout
         </button>
     </div>
     )

@@ -1,24 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signUp, login } from "../config/supabaseAuth.js";
 import { useNavigate } from "react-router-dom";
+import supabase from "../config/SupabaseClient.js";
 
 function Authentication() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState(false);
 
   let nav = useNavigate();
   const auth = async () => {
-    if (isSignUp)
-      await signUp(userName, password);
-    else
-      await login(userName, password);
-
-    let user = JSON.parse(window.localStorage.getItem("user"));
-    if (user) {
-      nav("/ChatWindow");
+    if (isSignUp) {
+      await signUp(email, password);
     }
+    else {
+      await login(email, password);
+
+      if (window.localStorage.getItem('user'))
+        nav("/ChatWindow");
+    }
+
   };
+
+  useEffect(() => {
+    supabase.auth.getUser().then(
+      async ({ data: { user } }) => {
+        if (user) {
+          console.log(user);
+          window.localStorage.setItem('user', JSON.stringify(user));
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          await supabase.from('users').insert({
+            id: user.id,
+            email: user.email,
+            username: null
+          });
+
+          if (!profile) {
+            nav("/customize");
+          } else {
+            nav("/ChatWindow");
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+      });
+  }, []);
 
   return (
     <div
@@ -30,31 +62,25 @@ function Authentication() {
           </div>
         </div>
         <div className="mt-4">
-          <div className="space-y-10 flex flex-col items-center">
+          <div className="space-y-5 flex flex-col items-center">
             <input
-              type="text"
+              type="email"
               name="name"
-              placeholder="Name"
-              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-gray-800 border-none text-white rounded-[2px] p-1"
-            />
-
-            <div className="flex">
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-gray-800 border-none text-white rounded-[2px] p-1"
-              />
-            </div>
+              className="bg-gray-800 border-none text-white rounded-[2px] p-1 " />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="bg-gray-800 border-none text-white rounded-[2px] p-1" />
 
             <button
               onClick={auth}
-              className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[3px]"
-            >
+              className=" py-1 px-2 bg-blue-600 hover:bg-blue-700 rounded-[3px]">
               {isSignUp ? "Sign Up" : "Login"}
             </button>
           </div>
@@ -62,8 +88,7 @@ function Authentication() {
             {isSignUp ? "Already have an account? " : "Don't have an account? "}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-blue-400 hover:underline"
-            >
+              className="text-blue-400 hover:underline">
               {isSignUp ? "Login" : "Sign Up"}
             </button>
           </p>
