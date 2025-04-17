@@ -15,12 +15,13 @@ export const signUp = async (email, password) => {
 
 export const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,    // again using `username` as email
+        email: email,
         password: password
     });
 
     if (error)
         alert(error.message);
+
     else {
         alert("signed in successfully");
         window.localStorage.setItem('user', JSON.stringify(data.user));

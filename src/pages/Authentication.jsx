@@ -16,7 +16,7 @@ function Authentication() {
     else {
       await login(email, password);
 
-      if (window.localStorage.getItem('user'))
+      if (window.localStorage.getItem('user') !== null)
         nav("/ChatWindow");
     }
 
