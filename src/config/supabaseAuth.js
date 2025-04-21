@@ -13,7 +13,10 @@ export const signUp = async (email, password) => {
 
 export const loginWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
+        options: {
+            redirectTo: 'https://rythm1c.github.io/reactMessanger/'
+        }
     });
 
     if (error) {
