@@ -11,7 +11,15 @@ export const signUp = async (email, password) => {
         alert('Check your email for confirmation.');
 }
 
+export const loginWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google'
+    });
 
+    if (error) {
+        alert('Google sign-in failed: ' + error.message);
+    }
+}
 
 export const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({

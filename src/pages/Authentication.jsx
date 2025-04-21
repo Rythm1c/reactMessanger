@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { signUp, login } from "../config/supabaseAuth.js";
+import { signUp, login, loginWithGoogle } from "../config/supabaseAuth.js";
 import { useNavigate } from "react-router-dom";
 import supabase from "../config/SupabaseClient.js";
+import { FcGoogle } from "react-icons/fc";
 
 function Authentication() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,8 +17,9 @@ function Authentication() {
     else {
       await login(email, password);
 
-      if (window.localStorage.getItem('user') !== null)
+      if (window.localStorage.getItem('user') !== null) {
         nav("/ChatWindow");
+      }
     }
 
   };
@@ -55,7 +57,7 @@ function Authentication() {
   return (
     <div
       className={`flex min-h-screen items-center justify-center bg-gray-600 text-white`}>
-      <div className="w-140 bg-gray-700 shadow-2xl p-1">
+      <div className="w-140 bg-gray-700 shadow-2xl p-4 rounded-lg">
         <div>
           <div className=" text-center text-xl">
             {isSignUp ? "Sign Up" : "Login"}
@@ -84,6 +86,8 @@ function Authentication() {
               {isSignUp ? "Sign Up" : "Login"}
             </button>
           </div>
+
+
           <p className="mt-4 text-center text-sm">
             {isSignUp ? "Already have an account? " : "Don't have an account? "}
             <button
@@ -92,6 +96,24 @@ function Authentication() {
               {isSignUp ? "Login" : "Sign Up"}
             </button>
           </p>
+
+          <div className="flex  items-center justify-center gap-2 mt-4">
+            <div className="h-[1px] bg-gray-500 w-1/4"></div>
+            <p className="text-center text-sm">
+              or sign in with
+            </p>
+            <div className="h-[1px] bg-gray-500 w-1/4"></div>
+          </div>
+
+          <div
+            onClick={loginWithGoogle}
+            className="flex items-center gap-x-5 justify-center mt-4 rounded-full bg-blue-500 w-2/5 m-auto hover:cursor-pointer hover:bg-blue-600 p-1">
+            <div className="text-3xl">
+              <FcGoogle />
+            </div>
+            <span>sign in with google</span>
+          </div>
+
         </div>
       </div>
     </div>
