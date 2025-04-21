@@ -16,10 +16,6 @@ function Authentication() {
     }
     else {
       await login(email, password);
-
-      if (window.localStorage.getItem('user') !== null) {
-        nav("/ChatWindow");
-      }
     }
 
   };
@@ -31,18 +27,17 @@ function Authentication() {
           console.log(user);
           window.localStorage.setItem('user', JSON.stringify(user));
           const { data: profile, error } = await supabase
-            .from('profiles')
+            .from('users')
             .select('*')
             .eq('id', user.id)
             .single();
 
-          await supabase.from('users').insert({
-            id: user.id,
-            email: user.email,
-            username: null
-          });
-
           if (!profile) {
+            await supabase.from('users').insert({
+              id: user.id,
+              email: user.email,
+              username: null
+            });
             nav("/customize");
           } else {
             nav("/ChatWindow");

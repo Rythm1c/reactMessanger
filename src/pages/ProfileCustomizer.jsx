@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import { uploadProfile } from '../config/SupabaseUtils';
+import { handleAvatarUpload, updateUsername } from '../config/SupabaseUtils';
 
 function ProfileCustomizer() {
     const [image, setImage] = React.useState(null);
@@ -73,18 +73,21 @@ function ProfileCustomizer() {
                         onClick={async () => {
                             // Save the profile data to the database
                             // Redirect to the chat window
-                            await uploadProfile(
-                                username,
-                                URL.createObjectURL(image)
-                            );
+                            const user = JSON.parse(window.localStorage.getItem("user"));
+
+                            if (image) {
+                                await handleAvatarUpload(user.id, image);
+                            }
+
+                            if (username) {
+                                await updateUsername(user.id, username)
+                            }
+
                             nav("/ChatWindow");
                         }}>
                         Done
                     </button>
                 </div>
-
-
-
 
             </div>
         </div>

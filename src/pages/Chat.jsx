@@ -5,7 +5,6 @@ import TopPanel from "../components/TopPanel.jsx";
 import BottomPanel from "../components/BottomPanel.jsx";
 import Messages from "../components/Messages.jsx";
 import supabase from "../config/SupabaseClient.js";
-import { fetchMessages, fetchContacts, getProfile } from '../config/SupabaseUtils.js'
 
 function Chat() {
   const [user, setUser] = useState(null);

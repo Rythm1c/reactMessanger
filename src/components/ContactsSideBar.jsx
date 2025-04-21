@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoLogOutOutline } from "react-icons/io5";
-import { fetchMessages, fetchContacts, getProfile, addContactToList } from '../config/SupabaseUtils.js'
+import { fetchMessages, fetchContacts, getUserById, addContactToList } from '../config/SupabaseUtils.js'
 import { useNavigate } from "react-router-dom";
 import { logout } from '../config/supabaseAuth.js';
-
 import { Modal } from '@mui/material';
 
 function ContactsSideBar({
@@ -25,14 +24,14 @@ function ContactsSideBar({
 
     const getData = async () => {
         setContacts(await fetchContacts(mainUser.id));
-        setProf(await getProfile(mainUser.id));
+        setProf(await getUserById(mainUser.id));
 
     }
 
     useEffect(() => {
         let data = [];
         contacts.forEach(async (contact) => {
-            data = [...data, await getProfile(contact.contact_id)];
+            data = [...data, await getUserById(contact.contact_id)];
             setProfiles(data);
         })
     }, [contacts]);
@@ -54,8 +53,8 @@ function ContactsSideBar({
 
     const highlightActive = (contact) => {
         if (activeContact) {
-            if (contact.name === activeContact.name) {
-                return 'bg-blue-300';
+            if (contact.username === activeContact.username) {
+                return 'bg-blue-300 ';
             }
             else {
                 return theme();
@@ -97,10 +96,14 @@ function ContactsSideBar({
 
         <div className={`mb-5  ${darkMode ? 'bg-gray-600' : 'bg-gray-200'} rounded-md p-2`}>
             <div className="w-20 h-20 flex items-center justify-center bg-gray-500 text-white text-3xl font-bold rounded-full m-[auto]">
-                {getInitials(prof?.name || "...")}
+
+                {prof?.avatar_url ?
+                    <img src={prof?.avatar_url} className='rounded-full h-20' alt="PFP" /> :
+                    getInitials(prof?.username || prof?.email || "...")}
+
             </div>
             <div className='text-center'>
-                <p>{prof?.name || "..."}</p>
+                <p>{prof?.username || prof?.email || "..."}</p>
             </div>
         </div>
 
@@ -114,8 +117,7 @@ function ContactsSideBar({
 
         <div className="flex-1 overflow-y-auto">
             {profiles.filter((profile) =>
-                profile
-                    .name
+                (profile.username || profile.email)
                     .toLowerCase()
                     .includes(search.toLowerCase()))
                 .map((profile, index) => (
@@ -123,10 +125,14 @@ function ContactsSideBar({
                         className={`flex items-center p-2 rounded-[10px] my-[5px] hover:cursor-pointer ${highlightActive(profile)}`}
                         onClick={() => loadContact(profile)}>
                         <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded-full mr-3">
-                            {getInitials(profile.name)}
+
+                            {profile.avatar_url ?
+                                <img src={profile.avatar_url} className='rounded-full h-10' alt="PFP" /> :
+                                getInitials((profile.username || profile.email))}
+
                         </div>
                         <span>
-                            {profile.name}
+                            {(profile.username || profile.email)}
                         </span>
 
                     </div>

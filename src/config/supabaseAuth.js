@@ -35,7 +35,6 @@ export const login = async (email, password) => {
 
     else {
         alert("signed in successfully");
-        window.localStorage.setItem('user', JSON.stringify(data.user));
     }
 
 }

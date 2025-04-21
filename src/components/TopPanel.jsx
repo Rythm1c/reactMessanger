@@ -28,13 +28,18 @@ function TopPanel({
 
             <div className='flex items-center'>{activeContact ?
                 <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded-full mr-3">
-                    {getInitials(activeContact?.name || "...")}
+
+                    {activeContact.avatar_url ?
+                        <img src={activeContact.avatar_url} className='rounded-full h-10' alt="PFP" /> :
+                        getInitials(activeContact?.username || activeContact?.email || "...")
+                    }
+
                 </div>
                 :
                 <div>
                 </div>}
 
-                <h2 className="text-lg font-semibold">{activeContact?.name || "Select a Contact"}</h2>
+                <h2 className="text-lg font-semibold">{activeContact?.username || activeContact?.email || "Select a Contact"}</h2>
             </div>
 
             <div className="relative flex gap-15">

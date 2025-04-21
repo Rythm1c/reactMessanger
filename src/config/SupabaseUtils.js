@@ -38,7 +38,7 @@ export const sendMessage = async (
     sender,
     receiver,
     content,
-    file = null,) => {
+    file = null) => {
 
     let upload = null;
     if (file) {
@@ -73,36 +73,27 @@ export const fetchMessages = async (user1, user2) => {
     return data;
 }
 
-export const handleAvatarUpload = async (file) => {
+export const handleAvatarUpload = async (user_id, file) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}.${fileExt}`;
-    const filePath = `public/${fileName}`;
+    const fileName = `${user_id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
 
     // Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, file);
 
     if (uploadError) {
-        return alert('Upload failed: ' + uploadError.message);
+        alert('Upload failed: ' + uploadError.message);
     }
 
     const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
 
     // Update avatar URL in users table
-    const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar: data.publicUrl })
-        .eq('id', user.id);
-
-    if (updateError) {
-        alert('Error saving avatar: ' + updateError.message);
-    } else {
-        alert('Avatar updated!');
-    }
+    updateUserAvatar(user_id, data.publicUrl);
 }
 
-async function getUser(email) {
+async function getUserByEmail(email) {
     const { data: users, error } = await supabase
         .from('users')
         .select('id')
@@ -119,9 +110,51 @@ async function getUser(email) {
     return users;
 }
 
+export const getUserById = async (id) => {
+    const { data: users, error } = await supabase
+        .from('users')
+        .select('id, email, username, avatar_url')
+        .eq('id', id)
+        .single();
+
+    if (error || !users) {
+        alert("User not found");
+        return null;
+    }
+
+    return users;
+}
+
+export const updateUsername = async (id, username) => {
+    // Update avatar URL in users table
+    const { error: updateError } = await supabase
+        .from('users')
+        .update({ username: username })
+        .eq('id', id);
+
+    if (updateError) {
+        alert('Error saving avatar: ' + updateError.message);
+    } else {
+        alert('username updated!');
+    }
+}
+export const updateUserAvatar = async (id, avatar_url) => {
+    // Update avatar URL in users table
+    const { error: updateError } = await supabase
+        .from('users')
+        .update({ avatar_url: avatar_url })
+        .eq('id', id);
+
+    if (updateError) {
+        alert('Error saving avatar: ' + updateError.message);
+    } else {
+        alert('Avatar updated!');
+    }
+}
+
 export const addContactToList = async (user_id, email) => {
 
-    let users = await getUser(email);
+    let users = await getUserByEmail(email);
 
     const { error } = await supabase
         .from("contacts")
@@ -133,28 +166,3 @@ export const addContactToList = async (user_id, email) => {
     if (error) return alert(error.message);
 }
 
-export const uploadProfile = async (name, avatar_url) => {
-
-    const { error } = await supabase
-        .from('profiles')
-        .insert([{
-            name,
-            avatar: avatar_url
-        }]);
-
-    if (error) return alert(error.message);
-}
-export const getProfile = async (id) => {
-
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-    if (error) {
-        console.log(error.message);
-    }
-
-    return data;
-}
